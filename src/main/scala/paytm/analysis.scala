@@ -34,7 +34,7 @@ object analysis {
     input_data_trans.repartition($"cl_ip")
     input_data_trans.write.parquet(output_path+"/Transformed_Data")
     
-    // Q1. Sessionize the web log by IP. Sessionize = aggregrate all page hits by visitor/IP during a fixed time window.
+    // Q1. Sessionize the web log by IP. Sessionize = aggregrate all page hits by visitor/IP during a fixed time window. 
     
     val logWithSessionIds_1 = input_data_trans.select('*,lag('date_time, 1).over(Window.partitionBy('cl_ip).orderBy('date_time)).as('prevTimestamp))
 

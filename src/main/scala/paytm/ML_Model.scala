@@ -13,6 +13,7 @@ import org.apache.spark.ml.regression.DecisionTreeRegressor
 import org.apache.spark.mllib.evaluation.RegressionMetrics
 import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.mllib.stat.Statistics
+import org.apache.spark.ml.clustering.KMeans
 
 
 
@@ -115,5 +116,4 @@ class ML_Model(training:DataFrame,test:DataFrame,save_path:String) extends Seria
     // return Test Results
     test_results  
   }
-  
 }

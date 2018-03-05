@@ -19,13 +19,13 @@ object RequestPerSecond {
       }
       val input_path = args(0).trim
       val output_path = args(1).trim
-      val sparkConf = new SparkConf().setAppName("WebLog Analysis").setMaster("local");
+      val sparkConf = new SparkConf().setAppName("Request Per Second Prediction").setMaster("local");
       val sc = new SparkContext(sparkConf);
       val sqlContext = new SQLContext(sc);
       import sqlContext.implicits._
       val input_data = sqlContext.read.parquet(input_path);
       val featureExtractor = new ML_Feature_Extractor(input_data)
-      val all_features = featureExtractor.request_load()
+      val all_features = featureExtractor.request_load
       
       // Transform and Analysis
       
