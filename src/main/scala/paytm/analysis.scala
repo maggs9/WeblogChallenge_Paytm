@@ -40,10 +40,12 @@ object analysis {
 
     val logWithSessionIds_2 =logWithSessionIds_1.select('*,when((unix_timestamp($"date_time") - unix_timestamp($"prevTimestamp"))< lit(15*60), lit(0)).otherwise(lit(1)).as('isNewSession))
 
-    val logWithSessionIds = logWithSessionIds_2.select('*,sum('isNewSession).over(Window.partitionBy('cl_ip).orderBy('cl_ip, 'date_time)).as('sessionId))
-    logWithSessionIds.write.parquet(output_path+"/logWithSessionIds")
+    val logWithSession = logWithSessionIds_2.select('*,sum('isNewSession).over(Window.partitionBy('cl_ip).orderBy('cl_ip, 'date_time)).as('sessionId))
+    logWithSession.write.parquet(output_path+"/logWithSessionIds")
     
     // Q2. Determine the average session time
+    val logWithSessionIdsAll = sqlContext.read.parquet(output_path+"/logWithSessionIds") //either persit or cache or write to get managable query tree and faster runtime
+    val logWithSessionIds = logWithSessionIdsAll.filter("cl_ip is not null")
     val avg_sess_time = logWithSessionIds.groupBy($"cl_ip",$"sessionId").agg((unix_timestamp(max($"date_time"))- unix_timestamp(min($"date_time"))).as("ses_time")).
                                           agg(avg($"ses_time")).collect.head(0)    
 
