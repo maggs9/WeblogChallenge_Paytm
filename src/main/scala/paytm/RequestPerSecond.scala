@@ -23,7 +23,11 @@ object RequestPerSecond {
       val sc = new SparkContext(sparkConf);
       val sqlContext = new SQLContext(sc);
       import sqlContext.implicits._
+      
+      // Load data
       val input_data = sqlContext.read.parquet(input_path);
+      
+      // Feature Extraction
       val featureExtractor = new ML_Feature_Extractor(input_data)
       val all_features = featureExtractor.request_load
       
@@ -50,6 +54,8 @@ object RequestPerSecond {
       val df = df_tmp.withColumn("label",$"next_num_url".cast(DoubleType))
 
       val Array(training, test) = df.select("label","features").randomSplit(Array(0.8, 0.2))
+      
+      // Model Building and Predictions
       val model_class = new ML_Model(training, test, output_path+"/model_" )
       
       // Linear Regression with Cross Validation and  predicting using the best model
